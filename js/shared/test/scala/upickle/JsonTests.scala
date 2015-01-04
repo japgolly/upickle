@@ -13,7 +13,6 @@ object JsonTests extends TestSuite{
         |    -42,
         |    true,
         |    false,
-        |    null,
         |    {
         |        "integer": 1234567890,
         |        "real": -9876.543210,
@@ -35,7 +34,6 @@ object JsonTests extends TestSuite{
         |        "hex": "\u0123\u4567\u89AB\uCDEF\uabcd\uef4A",
         |        "true": true,
         |        "false": false,
-        |        "null": null,
         |        "array":[  ],
         |        "object":{  },
         |        "address": "50 St. James Street",
@@ -72,14 +70,15 @@ object JsonTests extends TestSuite{
       for (json <- Seq(parsed, reparsed)){
         assert(
           json(0).value == "JSON Test Pattern pass1",
-          json(8)("real").value == -9876.54321,
-          json(8)("comment").value == "// /* <!-- --",
-          json(8)("jsontext").value == "{\"object with 1 member\":[\"array with 1 element\"]}",
-          json(19).value == "rosebud"
+          json(7)("real").value == -9876.54321,
+          json(7)("comment").value == "// /* <!-- --",
+          json(7)("jsontext").value == "{\"object with 1 member\":[\"array with 1 element\"]}",
+          json(18).value == "rosebud"
         )
       }
-      (parsed(19), reparsed(19))
+      (parsed(18), reparsed(18))
     }
+/*
     "performance" - {
       "read" - {
         var n = 0
@@ -104,5 +103,6 @@ object JsonTests extends TestSuite{
         n
       }
     }
+*/
   }
 }

@@ -11,20 +11,17 @@ import scala.annotation.implicitNotFound
 @implicitNotFound(
   "uPickle does not know how to write [${T}]s; define an implicit Writer[${T}] to teach it how"
 )
-trait Writer[T]{
-  def write0: T => Js.Value
-  final def write: T => Js.Value = {
-    case null => Js.Null
-    case t => write0(t)
-  }
+trait Writer[T] {
+  def write: T => Js.Value
 }
+
 object Writer{
   /**
    * Helper class to make it convenient to create instances of [[Writer]]
    * from the equivalent function
    */
   def apply[T](_write: T => Js.Value): Writer[T] = new Writer[T]{
-    val write0 = _write
+    def write = _write
   }
 
 }
@@ -36,11 +33,7 @@ object Writer{
   "uPickle does not know how to read [${T}]s; define an implicit Reader[${T}] to teach it how"
 )
 trait Reader[T]{
-  def read0: PF[Js.Value, T]
-
-  final def read : PF[Js.Value, T] = ({
-    case Js.Null => null.asInstanceOf[T]
-  }: PF[Js.Value, T]) orElse read0
+  def read: PF[Js.Value, T]
 }
 object Reader{
 
@@ -49,7 +42,7 @@ object Reader{
    * from the equivalent function
    */
   def apply[T](_read: PF[Js.Value, T]): Reader[T] = new Reader[T]{
-    def read0 = _read
+    def read = _read
   }
 }
 
@@ -60,9 +53,9 @@ object Reader{
 object Knot {
 
   class RW[T](var _write: T => Js.Value, var _read: PF[Js.Value, T]) extends Reader[T] with Writer[T] {
-    def read0 = _read
+    def read = _read
 
-    def write0 = _write
+    def write = _write
 
     def copyFrom(rw: Reader[T] with Writer[T]) = {
       _write = rw.write
@@ -71,7 +64,7 @@ object Knot {
   }
 
   class R[T](var _read: PF[Js.Value, T]) extends Reader[T] {
-    def read0 = _read
+    def read = _read
 
     def copyFrom(rw: Reader[T]) = {
       _read = rw.read
@@ -79,7 +72,7 @@ object Knot {
   }
 
   class W[T](var _write: T => Js.Value) extends Writer[T] {
-    def write0 = _write
+    def write = _write
 
     def copyFrom(rw: Writer[T]) = {
       _write = rw.write
@@ -93,8 +86,8 @@ object Knot {
  */
 object ReadWriter {
   def apply[T](_write: T => Js.Value, _read: PF[Js.Value, T]): Writer[T] with Reader[T] = new Writer[T] with Reader[T]{
-    def read0 = _read
-    def write0 = _write
+    def read = _read
+    def write = _write
   }
 }
 

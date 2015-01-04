@@ -6,7 +6,7 @@ import acyclic.file
 import scala.annotation.switch
 
 private[json] object JawnFacade extends MutableFacade[Js.Value] {
-  def jnull() = Js.Null
+  def jnull() = Js.Str("null")
   def jfalse() = Js.False
   def jtrue() = Js.True
   def jnum(s: String) = Js.Num(s.toDouble)
@@ -56,7 +56,6 @@ sealed trait Renderer {
 
   final def render(sb: StringBuilder, depth: Int, jv: Js.Value): Unit =
     jv match {
-      case Js.Null => sb.append("null")
       case Js.True => sb.append("true")
       case Js.False => sb.append("false")
       case Js.Num(n) => sb.append(if (n == n.toInt) n.toInt.toString else n.toString)

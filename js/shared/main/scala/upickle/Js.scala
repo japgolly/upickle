@@ -56,8 +56,5 @@ object Js {
   case object True extends Value{
     def value = true
   }
-  case object Null extends Value{
-    def value = null
-  }
 }
 

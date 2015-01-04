@@ -14,12 +14,10 @@ object StructTests extends TestSuite{
       'Boolean-rwk(Array(true, false), "[true,false]")(_.toSeq)
       'Int-rwk(Array(1, 2, 3, 4, 5), "[1,2,3,4,5]")(_.toSeq)
       'String-rwk(Array("omg", "i am", "cow"), """["omg","i am","cow"]""")(_.toSeq)
-      'Nulls-rwk(Array(null, "i am", null), """[null,"i am",null]""")(_.toSeq)
 
     }
 
     'tuples{
-      'null-rw(null: Tuple2[Int, Int], "null")
       "2" - rw((1, 2, 3.0), "[1,2,3.0]", "[1,2,3]")
       "2-1" - rw((false, 1), "[false,1]")
       "3" - rw(("omg", 1, "bbq"), """["omg",1,"bbq"]""")
@@ -90,11 +88,6 @@ object StructTests extends TestSuite{
       'SeqListMapOptionString-rw[Seq[List[Map[Option[String], String]]]](
         Seq(Nil, List(Map(Some("omg") -> "omg"), Map(Some("lol") -> "lol", None -> "")), List(Map())),
         """[[],[[[["omg"],"omg"]],[[["lol"],"lol"],[[],""]]],[[]]]"""
-      )
-
-      'NullySeqListMapOptionString-rw[Seq[List[Map[Option[String], String]]]](
-        Seq(Nil, List(Map(Some(null) -> "omg"), Map(Some("lol") -> null, None -> "")), List(null)),
-        """[[],[[[[null],"omg"]],[[["lol"],null],[[],""]]],[null]]"""
       )
 
       'tuples-rw(

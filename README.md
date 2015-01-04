@@ -8,3 +8,4 @@ Changes
 * Scala 2.11.4 only.
 * Jawn 0.7.2.
 * Fuck macros off.
+* Fuck nulls off.
