@@ -76,6 +76,7 @@ object FailureTests extends TestSuite{
         intercept[Invalid.Data] { read[Seq[String]]("[1, 2, 3]") }
         intercept[Invalid.Data] { read[Seq[(Int, String)]]("[[1, \"1\"], [2, \"2\"], []]") }
       }
+      /*
       'macroFailures{
         // Separate this guy out because the read macro and
         // the intercept macro play badly with each other
@@ -104,7 +105,7 @@ object FailureTests extends TestSuite{
           assert(err.msg.contains("Tagged Object"))
           assert(err.msg.contains("upickle.Fi"))
         }
-      }
+      }*/
     }
     'compileErrors{
       assert(
