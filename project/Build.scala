@@ -65,10 +65,10 @@ object Build extends sbt.Build{
          * Auto-generated picklers and unpicklers, used for creating the 22
          * versions of tuple-picklers and case-class picklers
          */
-        abstract class Generated {
+        object TupleImplicits {
           import Aliases._
           import Fns._
-          protected[this] def validate[T](name: String)(pf: PartialFunction[Js.Value, T]): PartialFunction[Js.Value, T]
+
           ${tuples.mkString("\n")}
         }
       """)

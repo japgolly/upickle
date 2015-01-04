@@ -2,7 +2,7 @@ package upickle
 import utest._
 import scala.concurrent.duration._
 import TestUtil._
-import Fns._, Implicits._
+import Fns._, Implicits._, TupleImplicits._
 
 object StructTests extends TestSuite{
   Seq(1).to[Vector]
