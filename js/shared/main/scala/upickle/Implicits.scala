@@ -3,15 +3,11 @@ package upickle
 import scala.reflect.ClassTag
 import scala.concurrent.duration.{FiniteDuration, Duration}
 import acyclic.file
+import TupleCodecs._
+import Aliases._
+import Fns._
 
-/**
- * Typeclasses to allow read/writing of all the common
- * data-types and data-structures in the standard library
- */
-object Implicits {
-  import TupleImplicits._
-  import Aliases._
-  import Fns._
+object BaseCodecs {
 
 //  implicit final val NothingR = R[Nothing]{case x => ???}
 //  implicit final val NothingW = W[Nothing](x => ???)
@@ -62,8 +58,11 @@ object Implicits {
   implicit final val LongRW = NumericStringReadWriter[Long](_.toLong)
   implicit final val FloatRW = NumericReadWriter(_.toFloat, _.toFloat)
   implicit final val DoubleRW = NumericReadWriter(_.toDouble, _.toDouble)
+}
 
+object StdlibCodecs {
   import collection.generic.CanBuildFrom
+
   implicit def SeqishR[T: R, V[_]]
                        (implicit cbf: CanBuildFrom[Nothing, T, V[T]]): R[V[T]] = R[V[T]](
     validate("Array(n)"){case Js.Arr(x@_*) => x.map(readJs[T]).to[V]}
@@ -82,10 +81,10 @@ object Implicits {
 
   implicit def OptionW[T: W]: W[Option[T]] = SeqLikeW[T, Option](x => Some(x.toSeq))
   implicit def SomeW[T: W] = W[Some[T]](OptionW[T].write)
-  implicit def NoneW: W[None.type] = W[None.type](OptionW[Int].write)
+  implicit def NoneW(implicit I: W[Int]): W[None.type] = W[None.type](OptionW[Int].write)
   implicit def OptionR[T: R]: R[Option[T]] = SeqLikeR[T, Option](_.headOption)
   implicit def SomeR[T: R] = R[Some[T]](OptionR[T].read andThen (_.asInstanceOf[Some[T]]))
-  implicit def NoneR: R[None.type] = R[None.type](OptionR[Int].read andThen (_.asInstanceOf[None.type]))
+  implicit def NoneR(implicit I: R[Int]): R[None.type] = R[None.type](OptionR[Int].read andThen (_.asInstanceOf[None.type]))
 
   implicit def ArrayW[T: W: ClassTag] = SeqLikeW[T, Array](Array.unapplySeq)
   implicit def ArrayR[T: R: ClassTag] = SeqLikeR[T, Array](x => Array.apply(x:_*))
@@ -115,6 +114,9 @@ object Implicits {
     case Left(t) => Js.Arr(Js.Num(0), writeJs(t))
     case Right(t) => Js.Arr(Js.Num(1), writeJs(t))
   }
+
+  import BaseCodecs.{StringRW, LongRW}
+
   implicit final val DurationW: W[Duration] = W[Duration]{
     case Duration.Inf => writeJs("inf")
     case Duration.MinusInf => writeJs("-inf")

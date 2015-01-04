@@ -1,7 +1,7 @@
 package upickle
 
 import utest._
-import Fns._, Implicits._, TupleImplicits._
+import Fns._, BaseCodecs._, StdlibCodecs._, TupleCodecs._
 
 case class Fee(i: Int, s: String)
 sealed trait Fi

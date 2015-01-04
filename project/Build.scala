@@ -65,7 +65,7 @@ object Build extends sbt.Build{
          * Auto-generated picklers and unpicklers, used for creating the 22
          * versions of tuple-picklers and case-class picklers
          */
-        object TupleImplicits {
+        object TupleCodecs {
           import Aliases._
           import Fns._
 

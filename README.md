@@ -1,4 +1,4 @@
-I like what μPickle does; I strongly dislike how it does it.
+I like what μPickle does; I want it to work very differently.
 
 This is my version.
 
@@ -10,4 +10,5 @@ Changes
 * Fuck macros off.
 * Fuck nulls off.
 * Objects with `final` everywhere instead of traits.
-* Neither `Implicits` or `Fns` mixed into package object.
+* Nothing mixed into package object.
+* Split implicits into `{Base,Stdlib,Tuple}Codecs`.
