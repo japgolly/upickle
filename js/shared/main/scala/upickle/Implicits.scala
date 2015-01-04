@@ -1,18 +1,8 @@
 package upickle
 
-import upickle.Aliases._
-
-
 import scala.reflect.ClassTag
-import scala.util.{Failure, Success}
-import scala.collection.SortedSet
 import scala.concurrent.duration.{FiniteDuration, Duration}
-import scala.reflect.macros.Context
 import acyclic.file
-import scala.language.higherKinds
-import scala.language.experimental.macros
-
-
 
 /**
  * Typeclasses to allow read/writing of all the common
@@ -149,39 +139,14 @@ trait Implicits extends Types {
   }
 
   implicit val DurationR = R[Duration](Internal.validate("DurationString"){FiniteR.read orElse InfiniteR.read})
-
-
 }
 
 /**
  * APIs that need to be exposed to the outside world to support Macros
  * which depend on them, but probably should not get used directly.
  */
-object Internal extends GeneratedInternal{
-  def merge0[T: ClassTag, R, U](f: T => R): U => R = {
-    case t: T => f(t)
-  }
-
-  def merge[T: ClassTag, R, V: ClassTag, U](f: T => R, g: V => R): U => R = {
-    case v: V => g(v)
-    case t: T => f(t)
-  }
-
-  def annotate[V: ClassTag](rw: R[V], n: String) = R[V]{
-    case Js.Arr(Js.Str(`n`), x) => rw.read(x)
-  }
-
-  def annotate[V: ClassTag](rw: W[V], n: String) = W[V]{
-    case x: V => Js.Arr(Js.Str(n), rw.write(x))
-  }
-
-  def Case0R[T](t: T) = R[T]({case x => t})
-  def Case0W[T](t: T) = W[T](x => Js.Obj())
-
+private[upickle] object Internal {
   def validate[T](name: String)(pf: PartialFunction[Js.Value, T]): PartialFunction[Js.Value, T] = {
     pf.orElse { case x => throw Invalid.Data(x, name) }
-  }
-  def validateReader[T](name: String)(r: Reader[T]): Reader[T] = Reader{
-    r.read.orElse { case x => throw Invalid.Data(x, name) }
   }
 }

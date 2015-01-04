@@ -1,7 +1,6 @@
 package upickle
 
 import scala.{PartialFunction => PF}
-import language.experimental.macros
 import scala.annotation.implicitNotFound
 
 /** Serialize a type [[T]] to JSON, and eventually to a string. */

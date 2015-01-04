@@ -1,4 +1,3 @@
-import scala.reflect.ClassTag
 import acyclic.file
 
 package object upickle extends Types with Implicits with Generated {

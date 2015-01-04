@@ -38,7 +38,7 @@ object Build extends sbt.Build{
 
     sourceGenerators in Compile <+= sourceManaged in Compile map { dir =>
       val file = dir / "upickle" / "Generated.scala"
-      val tuplesAndCases = (1 to 22).map{ i =>
+      val tuples = (1 to 22).map{ i =>
         def commaSeparated(s: Int => String) = (1 to i).map(s).mkString(", ")
         val writerTypes = commaSeparated(j => s"T$j: Writer")
         val readerTypes = commaSeparated(j => s"T$j: Reader")
@@ -46,45 +46,29 @@ object Build extends sbt.Build{
         val written = commaSeparated(j => s"writeJs(x._$j)")
         val pattern = commaSeparated(j => s"x$j")
         val read = commaSeparated(j => s"readJs[T$j](x$j)")
-        val caseReader =
-          if(i == 1) s"f(readJs[Tuple1[T1]](x)._1)"
-          else s"f.tupled(readJs[Tuple$i[$typeTuple]](x))"
 
-        (s"""
+        s"""
         implicit def Tuple${i}W[$writerTypes] = W[Tuple${i}[$typeTuple]](
           x => Js.Arr($written)
         )
         implicit def Tuple${i}R[$readerTypes] = R[Tuple${i}[$typeTuple]](
           validate("Array(${i})"){case Js.Arr($pattern) => Tuple${i}($read)}
         )
-        """, s"""
-        def Case${i}R[$readerTypes, V]
-                     (f: ($typeTuple) => V, names: Array[String], defaults: Array[Js.Value])
-          = RCase[V](names, defaults, {case x => $caseReader})
-
-        def Case${i}W[$writerTypes, V]
-                     (g: V => Option[Tuple${i}[$typeTuple]], names: Array[String], defaults: Array[Js.Value])
-          = WCase[V](names, defaults, x => writeJs(g(x).get))
-        """)
+        """
       }
-
-      val (tuples, cases) = tuplesAndCases.unzip
 
       IO.write(file, s"""
         package upickle
         import acyclic.file
-        import language.experimental.macros
+
         /**
          * Auto-generated picklers and unpicklers, used for creating the 22
          * versions of tuple-picklers and case-class picklers
          */
-        trait Generated extends Types with GeneratedUtil{
+        trait Generated extends Types {
           import Aliases._
-
+          protected[this] def validate[T](name: String)(pf: PartialFunction[Js.Value, T]): PartialFunction[Js.Value, T]
           ${tuples.mkString("\n")}
-        }
-        trait GeneratedInternal extends Generated{
-          ${cases.mkString("\n")}
         }
       """)
       Seq(file)
