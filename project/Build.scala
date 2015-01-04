@@ -8,10 +8,10 @@ import scala.scalajs.sbtplugin.ScalaJSPlugin.ScalaJSKeys._
 
 object Build extends sbt.Build{
   val cross = new utest.jsrunner.JsCrossBuild(
-    organization := "com.lihaoyi",
+    organization := "com.github.japgolly.fork.upickle",
 
-    version := "0.2.5",
-    scalaVersion := "2.10.4",
+    version := "1-SNAPSHOT",
+    scalaVersion := "2.11.4",
     name := "upickle",
 
     scalacOptions := Seq("-unchecked",
@@ -117,7 +117,7 @@ object Build extends sbt.Build{
     p => p.settings(
       scalacOptions ++= (if (isSnapshot.value) Seq.empty else Seq({
         val a = p.base.toURI.toString.replaceFirst("[^/]+/?$", "")
-        val g = "https://raw.githubusercontent.com/lihaoyi/upickle"
+        val g = "https://raw.githubusercontent.com/japgolly/upickle"
         s"-P:scalajs:mapSourceURI:$a->$g/v${version.value}/"
       }))
     )
@@ -129,6 +129,6 @@ object Build extends sbt.Build{
   ).configure(sourceMapsToGithub)
 
   lazy val jvm = cross.jvm.settings(
-    libraryDependencies += "org.spire-math" %% "jawn-parser" % "0.6.0"
+    libraryDependencies += "org.spire-math" %% "jawn-parser" % "0.7.2"
   )
 }
