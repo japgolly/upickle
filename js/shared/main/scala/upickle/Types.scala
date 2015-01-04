@@ -4,94 +4,66 @@ import scala.{PartialFunction => PF}
 import language.experimental.macros
 import scala.annotation.implicitNotFound
 
-/**
- * A typeclass that allows you to serialize a type [[T]] to JSON, and
- * eventually to a string
- */
-@implicitNotFound(
-  "uPickle does not know how to write [${T}]s; define an implicit Writer[${T}] to teach it how"
-)
+/** Serialize a type [[T]] to JSON, and eventually to a string. */
+@implicitNotFound("uPickle does not know how to write [${T}]s; define an implicit Writer[${T}] to teach it how")
 trait Writer[T] {
   def write: T => Js.Value
 }
 
-object Writer{
-  /**
-   * Helper class to make it convenient to create instances of [[Writer]]
-   * from the equivalent function
-   */
-  def apply[T](_write: T => Js.Value): Writer[T] = new Writer[T]{
+object Writer {
+  def apply[T](_write: T => Js.Value): Writer[T] = new Writer[T] {
     def write = _write
   }
-
 }
-/**
- * A typeclass that allows you to deserialize a type [[T]] from JSON,
- * which can itself be read from a String
- */
-@implicitNotFound(
-  "uPickle does not know how to read [${T}]s; define an implicit Reader[${T}] to teach it how"
-)
-trait Reader[T]{
+
+/** Deserialize a type [[T]] from JSON, which can itself be read from a String. */
+@implicitNotFound("uPickle does not know how to read [${T}]s; define an implicit Reader[${T}] to teach it how")
+trait Reader[T] {
   def read: PF[Js.Value, T]
 }
-object Reader{
 
-  /**
-   * Helper class to make it convenient to create instances of [[Reader]]
-   * from the equivalent function
-   */
-  def apply[T](_read: PF[Js.Value, T]): Reader[T] = new Reader[T]{
+object Reader {
+  def apply[T](_read: PF[Js.Value, T]): Reader[T] = new Reader[T] {
     def read = _read
   }
 }
 
-/**
- * Helper object that makes it convenient to create instances of bother
- * [[Reader]] and [[Writer]] at the same time.
- */
 object ReadWriter {
-  def apply[T](_write: T => Js.Value, _read: PF[Js.Value, T]): Writer[T] with Reader[T] = new Writer[T] with Reader[T]{
+  def apply[T](_write: T => Js.Value, _read: PF[Js.Value, T]): Writer[T] with Reader[T] = new Writer[T] with Reader[T] {
     def read = _read
     def write = _write
   }
 }
 
-/**
- * Handy shorthands for Reader and Writer
- */
-object Aliases{
+/** Handy shorthands for Reader and Writer */
+object Aliases {
   type R[T] = Reader[T]
-  val R = Reader
+  @inline final val R = Reader
 
   type W[T] = Writer[T]
-  val W = Writer
+  @inline final val W = Writer
 
   type RW[T] = R[T] with W[T]
-  val RW = ReadWriter
+  @inline final val RW = ReadWriter
 }
+
 /**
  * Basic functionality to be able to read and write objects. Kept as a trait so
  * other internal files can use it, while also mixing it into the `upickle`
  * package to form the public API
  */
-trait Types{
+trait Types {
   type ReadWriter[T] = Reader[T] with Writer[T]
 
-  /**
-   * Serialize an object of type [[T]] to a `String`
-   */
+  /** Serialize an object of type [[T]] to a `String` */
   def write[T: Writer](expr: T): String = json.write(writeJs(expr))
-  /**
-   * Serialize an object of type [[T]] to a `Js.Value`
-   */
+
+  /** Serialize an object of type [[T]] to a `Js.Value` */
   def writeJs[T: Writer](expr: T): Js.Value = implicitly[Writer[T]].write(expr)
-  /**
-   * Deserialize a `String` object of type [[T]]
-   */
+
+  /** Deserialize a `String` object of type [[T]] */
   def read[T: Reader](expr: String): T = readJs[T](json.read(expr))
-  /**
-   * Deserialize a `Js.Value` object of type [[T]]
-   */
+
+  /** Deserialize a `Js.Value` object of type [[T]] */
   def readJs[T: Reader](expr: Js.Value): T = implicitly[Reader[T]].read(expr)
 }

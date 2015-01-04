@@ -1,7 +1,5 @@
 package upickle
 import acyclic.file
-import scala.annotation.switch
-import scala.collection.mutable.StringBuilder
 
 /**
  * Exceptions that can be thrown by upickle; placed in the same file
