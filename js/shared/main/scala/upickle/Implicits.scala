@@ -167,11 +167,6 @@ object Internal extends GeneratedInternal{
     case t: T => f(t)
   }
 
-
-  def knotRW[T, V](f: Knot.RW[T] => V): V = f(new Knot.RW(null, null))
-  def knotR[T, V](f: Knot.R[T] => V): V = f(new Knot.R(null))
-  def knotW[T, V](f: Knot.W[T] => V): V = f(new Knot.W(null))
-
   def annotate[V: ClassTag](rw: R[V], n: String) = R[V]{
     case Js.Arr(Js.Str(`n`), x) => rw.read(x)
   }

@@ -47,40 +47,6 @@ object Reader{
 }
 
 /**
- * Classes that provides a mutable version of [[ReadWriter]], used to
- * allow serialization and deserialization of recursive data structure
- */
-object Knot {
-
-  class RW[T](var _write: T => Js.Value, var _read: PF[Js.Value, T]) extends Reader[T] with Writer[T] {
-    def read = _read
-
-    def write = _write
-
-    def copyFrom(rw: Reader[T] with Writer[T]) = {
-      _write = rw.write
-      _read = rw.read
-    }
-  }
-
-  class R[T](var _read: PF[Js.Value, T]) extends Reader[T] {
-    def read = _read
-
-    def copyFrom(rw: Reader[T]) = {
-      _read = rw.read
-    }
-  }
-
-  class W[T](var _write: T => Js.Value) extends Writer[T] {
-    def write = _write
-
-    def copyFrom(rw: Writer[T]) = {
-      _write = rw.write
-    }
-  }
-}
-
-/**
  * Helper object that makes it convenient to create instances of bother
  * [[Reader]] and [[Writer]] at the same time.
  */

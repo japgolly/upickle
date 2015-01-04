@@ -1,6 +1,6 @@
 package upickle
 import acyclic.file
-import collection.mutable
+
 /**
  * Stuff that generated code depends on but I don't want
  * to put in the stringly typed code-generator
