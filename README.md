@@ -9,3 +9,5 @@ Changes
 * Jawn 0.7.2.
 * Fuck macros off.
 * Fuck nulls off.
+* Objects with `final` everywhere instead of traits.
+* Neither `Implicits` or `Fns` mixed into package object.

@@ -3,6 +3,7 @@ import utest._
 import scala.collection.SortedSet
 import scala.concurrent.duration._
 import TestUtil._
+import Fns._, Implicits._
 
 object PrimitiveTests extends TestSuite{
 

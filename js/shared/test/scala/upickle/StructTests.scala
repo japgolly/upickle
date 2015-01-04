@@ -2,9 +2,7 @@ package upickle
 import utest._
 import scala.concurrent.duration._
 import TestUtil._
-
-import scala.reflect.ClassTag
-
+import Fns._, Implicits._
 
 object StructTests extends TestSuite{
   Seq(1).to[Vector]

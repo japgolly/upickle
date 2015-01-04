@@ -1,6 +1,8 @@
 package upickle
 
 import utest._
+import Fns._, Implicits._
+
 case class Fee(i: Int, s: String)
 sealed trait Fi
 object Fi{

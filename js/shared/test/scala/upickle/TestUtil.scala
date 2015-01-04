@@ -1,5 +1,6 @@
 package upickle
 import utest._
+import Fns._, Implicits._
 
 /**
 * Created by haoyi on 4/22/14.

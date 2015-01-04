@@ -48,10 +48,10 @@ object Build extends sbt.Build{
         val read = commaSeparated(j => s"readJs[T$j](x$j)")
 
         s"""
-        implicit def Tuple${i}W[$writerTypes] = W[Tuple${i}[$typeTuple]](
+        implicit final def Tuple${i}W[$writerTypes] = W[Tuple${i}[$typeTuple]](
           x => Js.Arr($written)
         )
-        implicit def Tuple${i}R[$readerTypes] = R[Tuple${i}[$typeTuple]](
+        implicit final def Tuple${i}R[$readerTypes] = R[Tuple${i}[$typeTuple]](
           validate("Array(${i})"){case Js.Arr($pattern) => Tuple${i}($read)}
         )
         """
@@ -65,8 +65,9 @@ object Build extends sbt.Build{
          * Auto-generated picklers and unpicklers, used for creating the 22
          * versions of tuple-picklers and case-class picklers
          */
-        trait Generated extends Types {
+        abstract class Generated {
           import Aliases._
+          import Fns._
           protected[this] def validate[T](name: String)(pf: PartialFunction[Js.Value, T]): PartialFunction[Js.Value, T]
           ${tuples.mkString("\n")}
         }

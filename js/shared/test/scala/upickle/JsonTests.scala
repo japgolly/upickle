@@ -1,5 +1,6 @@
 package upickle
 import utest._
+import Fns._, Implicits._
 
 object JsonTests extends TestSuite{
   val tests = TestSuite{

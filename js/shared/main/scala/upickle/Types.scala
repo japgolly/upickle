@@ -10,9 +10,8 @@ trait Writer[T] {
 }
 
 object Writer {
-  def apply[T](_write: T => Js.Value): Writer[T] = new Writer[T] {
-    def write = _write
-  }
+  @inline final def apply[T](_write: T => Js.Value): Writer[T] =
+    new Writer[T] { def write = _write }
 }
 
 /** Deserialize a type [[T]] from JSON, which can itself be read from a String. */
@@ -22,20 +21,20 @@ trait Reader[T] {
 }
 
 object Reader {
-  def apply[T](_read: PF[Js.Value, T]): Reader[T] = new Reader[T] {
-    def read = _read
-  }
+  @inline final def apply[T](_read: PF[Js.Value, T]): Reader[T] =
+    new Reader[T] { def read = _read }
 }
 
 object ReadWriter {
-  def apply[T](_write: T => Js.Value, _read: PF[Js.Value, T]): Writer[T] with Reader[T] = new Writer[T] with Reader[T] {
-    def read = _read
-    def write = _write
-  }
+  @inline final def apply[T](_write: T => Js.Value, _read: PF[Js.Value, T]): Writer[T] with Reader[T] =
+    new Writer[T] with Reader[T] {
+      def read = _read
+      def write = _write
+    }
 }
 
 /** Handy shorthands for Reader and Writer */
-object Aliases {
+private[upickle] object Aliases {
   type R[T] = Reader[T]
   @inline final val R = Reader
 
@@ -51,18 +50,17 @@ object Aliases {
  * other internal files can use it, while also mixing it into the `upickle`
  * package to form the public API
  */
-trait Types {
-  type ReadWriter[T] = Reader[T] with Writer[T]
+object Fns {
 
   /** Serialize an object of type [[T]] to a `String` */
-  def write[T: Writer](expr: T): String = json.write(writeJs(expr))
+  @inline final def write[T: Writer](expr: T): String = json.write(writeJs(expr))
 
   /** Serialize an object of type [[T]] to a `Js.Value` */
-  def writeJs[T: Writer](expr: T): Js.Value = implicitly[Writer[T]].write(expr)
+  @inline final def writeJs[T: Writer](expr: T): Js.Value = implicitly[Writer[T]].write(expr)
 
   /** Deserialize a `String` object of type [[T]] */
-  def read[T: Reader](expr: String): T = readJs[T](json.read(expr))
+  @inline final def read[T: Reader](expr: String): T = readJs[T](json.read(expr))
 
   /** Deserialize a `Js.Value` object of type [[T]] */
-  def readJs[T: Reader](expr: Js.Value): T = implicitly[Reader[T]].read(expr)
+  @inline final def readJs[T: Reader](expr: Js.Value): T = implicitly[Reader[T]].read(expr)
 }
