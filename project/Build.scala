@@ -7,6 +7,9 @@ import scala.scalajs.sbtplugin.ScalaJSPlugin._
 import scala.scalajs.sbtplugin.ScalaJSPlugin.ScalaJSKeys._
 
 object Build extends sbt.Build{
+  val scalacFlags = Seq("-unchecked", "-deprecation", "-encoding", "utf8", "-feature",
+    "-language:postfixOps", "-language:implicitConversions", "-language:higherKinds", "-language:existentials")
+
   val cross = new utest.jsrunner.JsCrossBuild(
     organization := "com.github.japgolly.fork.upickle",
 
@@ -14,10 +17,8 @@ object Build extends sbt.Build{
     scalaVersion := "2.11.4",
     name := "upickle",
 
-    scalacOptions := Seq("-unchecked",
-                         "-deprecation",
-                         "-encoding", "utf8",
-                         "-feature"),
+    scalacOptions := scalacFlags,
+    scalacOptions in Test ++= scalacFlags,
 
     // Sonatype
     publishArtifact in Test := false,
