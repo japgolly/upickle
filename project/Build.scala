@@ -1,6 +1,8 @@
 import sbt._
 import Keys._
 
+import com.typesafe.sbt.pgp.PgpKeys._
+
 import scala.scalajs.sbtplugin.env.nodejs.NodeJSEnv
 import scala.scalajs.sbtplugin.ScalaJSPlugin._
 
@@ -20,11 +22,41 @@ object Build extends sbt.Build{
     scalacOptions := scalacFlags,
     scalacOptions in Test ++= scalacFlags,
 
-    // Sonatype
-    publishArtifact in Test := false,
-    publishTo <<= version { (v: String) =>
-      Some("releases"  at "https://oss.sonatype.org/service/local/staging/deploy/maven2")
+    // publication settings
+    publishTo := {
+      val nexus = "https://oss.sonatype.org/"
+      if (isSnapshot.value)
+        Some("snapshots" at nexus + "content/repositories/snapshots")
+      else
+        Some("releases"  at nexus + "service/local/staging/deploy/maven2")
     },
+    pomExtra := (
+      <url>https://github.com/japgolly/upickle</url>
+      <licenses>
+        <license>
+          <name>MIT license</name>
+          <url>http://www.opensource.org/licenses/mit-license.php</url>
+        </license>
+      </licenses>
+      <scm>
+        <connection>scm:git:github.com/japgolly/upickle</connection>
+        <developerConnection>scm:git:git@github.com:japgolly/upickle.git</developerConnection>
+        <url>github.com:japgolly/upickle.git</url>
+      </scm>
+      <developers>
+        <developer>
+          <id>lihaoyi</id>
+          <name>Li Haoyi</name>
+          <url>https://github.com/lihaoyi</url>
+        </developer>
+        <developer>
+          <id>japgolly</id>
+          <name>David Barri</name>
+        </developer>
+      </developers>),
+
+    publishArtifact in Test := false,
+
     libraryDependencies ++= Seq(
       "com.lihaoyi" %% "acyclic" % "0.1.2" % "provided",
       "org.scala-lang" % "scala-reflect" % scalaVersion.value % "provided"
@@ -76,27 +108,7 @@ object Build extends sbt.Build{
     },
     autoCompilerPlugins := true,
 //    scalacOptions += "-Xlog-implicits",
-    addCompilerPlugin("com.lihaoyi" %% "acyclic" % "0.1.2"),
-    pomExtra :=
-      <url>https://github.com/lihaoyi/upickle</url>
-      <licenses>
-        <license>
-          <name>MIT license</name>
-          <url>http://www.opensource.org/licenses/mit-license.php</url>
-        </license>
-      </licenses>
-      <scm>
-        <url>git://github.com/lihaoyi/upickle.git</url>
-        <connection>scm:git://github.com/lihaoyi/upickle.git</connection>
-      </scm>
-      <developers>
-        <developer>
-          <id>lihaoyi</id>
-          <name>Li Haoyi</name>
-          <url>https://github.com/lihaoyi</url>
-        </developer>
-      </developers>
-
+    addCompilerPlugin("com.lihaoyi" %% "acyclic" % "0.1.2")
   )
 
   def sourceMapsToGithub: Project => Project =
