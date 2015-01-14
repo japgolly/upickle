@@ -3,10 +3,9 @@ import Keys._
 
 import com.typesafe.sbt.pgp.PgpKeys._
 
-import scala.scalajs.sbtplugin.env.nodejs.NodeJSEnv
-import scala.scalajs.sbtplugin.ScalaJSPlugin._
-
-import scala.scalajs.sbtplugin.ScalaJSPlugin.ScalaJSKeys._
+import org.scalajs.sbtplugin.ScalaJSPlugin
+import org.scalajs.sbtplugin.ScalaJSPlugin._
+import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 
 object Build extends sbt.Build{
   val scalacFlags = Seq("-unchecked", "-deprecation", "-encoding", "utf8", "-feature",
@@ -15,8 +14,8 @@ object Build extends sbt.Build{
   val cross = new utest.jsrunner.JsCrossBuild(
     organization := "com.github.japgolly.fork.upickle",
 
-    version := "custom-1",
-    scalaVersion := "2.11.4",
+    version := "custom-2-SNAPSHOT",
+    scalaVersion := "2.11.5",
     name := "upickle",
 
     scalacOptions := scalacFlags,
@@ -123,7 +122,7 @@ object Build extends sbt.Build{
   lazy val root = cross.root
 
   lazy val js = cross.js.settings(
-    (jsEnv in Test) := new NodeJSEnv
+    (jsEnv in Test) := NodeJSEnv().value
   ).configure(sourceMapsToGithub)
 
   lazy val jvm = cross.jvm.settings(
