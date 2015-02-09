@@ -2,7 +2,7 @@ crossScalaVersions := Seq("2.11.5")
 
 val upickle = crossProject.settings(
   organization := "com.github.japgolly.fork.upickle",
-  version := "custom-2-SNAPSHOT",
+  version := "custom-2",
   scalaVersion := "2.11.5",
   name := "upickle",
 
