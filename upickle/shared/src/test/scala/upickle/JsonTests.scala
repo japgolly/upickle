@@ -1,6 +1,6 @@
 package upickle
 import utest._
-import Fns._, BaseCodecs._, StdlibCodecs._, TupleCodecs._
+import Fns._, BaseCodecs._, StdlibCodecs.All._, TupleCodecs._
 
 object JsonTests extends TestSuite{
   val tests = TestSuite{

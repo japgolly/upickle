@@ -2,7 +2,7 @@ package upickle
 import utest._
 import scala.concurrent.duration._
 import TestUtil._
-import Fns._, BaseCodecs._, StdlibCodecs._, TupleCodecs._
+import Fns._, BaseCodecs._, StdlibCodecs.All._, TupleCodecs._
 
 object StructTests extends TestSuite{
   Seq(1).to[Vector]

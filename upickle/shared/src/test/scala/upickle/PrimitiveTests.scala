@@ -3,7 +3,7 @@ import utest._
 import scala.collection.SortedSet
 import scala.concurrent.duration._
 import TestUtil._
-import Fns._, BaseCodecs._, StdlibCodecs._, TupleCodecs._
+import Fns._, BaseCodecs._, StdlibCodecs.All._, TupleCodecs._
 
 object PrimitiveTests extends TestSuite{
 
