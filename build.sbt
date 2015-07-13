@@ -2,8 +2,8 @@ crossScalaVersions := Seq("2.11.5")
 
 val upickle = crossProject.settings(
   organization := "com.github.japgolly.fork.upickle",
-  version := "custom-3",
-  scalaVersion := "2.11.5",
+  version := "custom-4",
+  scalaVersion := "2.11.7",
   name := "upickle",
 
   scalacOptions := Seq("-unchecked",
@@ -21,13 +21,13 @@ val upickle = crossProject.settings(
   testFrameworks += new TestFramework("utest.runner.Framework"),
   libraryDependencies ++= Seq(
     "com.lihaoyi" %% "acyclic" % "0.1.2" % "provided",
-    "com.lihaoyi" %%% "utest" % "0.3.0" % "test",
+    "com.lihaoyi" %%% "utest" % "0.3.1" % "test",
     "org.scala-lang" % "scala-reflect" % scalaVersion.value % "provided"
   ) ++ (
     if (scalaVersion.value startsWith "2.11.") Nil
     else Seq(
-      "org.scalamacros" %% s"quasiquotes" % "2.0.0" % "provided",
-      compilerPlugin("org.scalamacros" % s"paradise" % "2.0.0" cross CrossVersion.full)
+      "org.scalamacros" %% s"quasiquotes" % "2.0.1" % "provided",
+      compilerPlugin("org.scalamacros" % s"paradise" % "2.0.1" cross CrossVersion.full)
     )
     ),
   unmanagedSourceDirectories in Compile ++= {
