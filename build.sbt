@@ -106,7 +106,7 @@ val upickle = crossProject.settings(
       s"-P:scalajs:mapSourceURI:$a->$g/v${version.value}/"
     }))
 ).jvmSettings(
-  libraryDependencies += "org.spire-math" %% "jawn-parser" % "0.7.2"
+  libraryDependencies += "org.spire-math" %% "jawn-parser" % "0.8.0"
 )
 
 lazy val upickleJS = upickle.js
