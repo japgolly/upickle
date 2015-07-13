@@ -7,8 +7,8 @@ use [@lihaoyi's original](https://github.com/lihaoyi/upickle).
 Changes
 =======
 
-* Scala 2.11.4 only.
-* Jawn 0.7.2.
+* Scala 2.11.7 only.
+* Jawn 0.8.0.
 * Fuck macros off.
 * Fuck nulls off.
 * Objects instead of traits.
