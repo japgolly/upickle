@@ -1,9 +1,9 @@
-crossScalaVersions := Seq("2.11.5")
+val ScalaVersion = "2.11.7"
 
 val upickle = crossProject.settings(
   organization := "com.github.japgolly.fork.upickle",
-  version := "custom-4",
-  scalaVersion := "2.11.7",
+  version := "custom-5",
+  scalaVersion := ScalaVersion,
   name := "upickle",
 
   scalacOptions := Seq("-unchecked",
@@ -106,7 +106,7 @@ val upickle = crossProject.settings(
       s"-P:scalajs:mapSourceURI:$a->$g/v${version.value}/"
     }))
 ).jvmSettings(
-  libraryDependencies += "org.spire-math" %% "jawn-parser" % "0.8.0"
+  libraryDependencies += "org.spire-math" %% "jawn-parser" % "0.8.3"
 )
 
 lazy val upickleJS = upickle.js

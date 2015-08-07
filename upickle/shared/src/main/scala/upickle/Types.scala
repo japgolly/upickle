@@ -26,11 +26,17 @@ object Reader {
 }
 
 object ReadWriter {
-  @inline final def apply[T](_write: T => Js.Value, _read: PF[Js.Value, T]): Writer[T] with Reader[T] =
+  def apply[T](_write: T => Js.Value, _read: PF[Js.Value, T]): Reader[T] with Writer[T] =
     new Writer[T] with Reader[T] {
       def read = _read
       def write = _write
     }
+
+  def xmap[A, B](g: A => B)(f: B => A)(implicit RB: Reader[A], WB: Writer[A]): Reader[B] with Writer[B] =
+    ReadWriter[B](WB.write compose f, RB.read andThen g)
+
+  @inline def merge[A](implicit r: Reader[A], w: Writer[A]): Reader[A] with Writer[A] =
+    ReadWriter[A](w.write, r.read)
 }
 
 /** Handy shorthands for Reader and Writer */
