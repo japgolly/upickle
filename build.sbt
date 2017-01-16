@@ -1,8 +1,8 @@
-val ScalaVersion = "2.11.7"
+val ScalaVersion = "2.12.1"
 
 val upickle = crossProject.settings(
   organization := "com.github.japgolly.fork.upickle",
-  version := "custom-5",
+  version := "custom-6",
   scalaVersion := ScalaVersion,
   name := "upickle",
 
@@ -15,26 +15,25 @@ val upickle = crossProject.settings(
 
   // Sonatype
   publishArtifact in Test := false,
-  publishTo <<= version { (v: String) =>
-    Some("releases"  at "https://oss.sonatype.org/service/local/staging/deploy/maven2")
-  },
+  publishTo := Some("releases" at "https://oss.sonatype.org/service/local/staging/deploy/maven2"),
   testFrameworks += new TestFramework("utest.runner.Framework"),
   libraryDependencies ++= Seq(
-    "com.lihaoyi" %% "acyclic" % "0.1.2" % "provided",
-    "com.lihaoyi" %%% "utest" % "0.3.1" % "test",
+    "com.lihaoyi" %% "acyclic" % "0.1.7" % "provided",
+    "com.lihaoyi" %%% "utest" % "0.4.5" % "test",
     "org.scala-lang" % "scala-reflect" % scalaVersion.value % "provided"
-  ) ++ (
+  )/* ++ (
     if (scalaVersion.value startsWith "2.11.") Nil
     else Seq(
       "org.scalamacros" %% s"quasiquotes" % "2.0.1" % "provided",
       compilerPlugin("org.scalamacros" % s"paradise" % "2.0.1" cross CrossVersion.full)
     )
-    ),
+    )*/,
   unmanagedSourceDirectories in Compile ++= {
     if (scalaVersion.value startsWith "2.10.") Seq(baseDirectory.value / ".."/"shared"/"src"/ "main" / "scala-2.10")
     else Seq(baseDirectory.value / ".."/"shared" / "src"/"main" / "scala-2.11")
   },
-  sourceGenerators in Compile <+= sourceManaged in Compile map { dir =>
+  sourceGenerators in Compile += Def.task{
+    val dir = (sourceManaged in Compile).value
     val file = dir / "upickle" / "Generated.scala"
     val tuples = (1 to 22).map{ i =>
       def commaSeparated(s: Int => String) = (1 to i).map(s).mkString(", ")
@@ -71,10 +70,10 @@ val upickle = crossProject.settings(
       }
     """)
     Seq(file)
-  },
+  }.taskValue,
   autoCompilerPlugins := true,
   //    scalacOptions += "-Xlog-implicits",
-  addCompilerPlugin("com.lihaoyi" %% "acyclic" % "0.1.2"),
+  addCompilerPlugin("com.lihaoyi" %% "acyclic" % "0.1.7"),
   pomExtra :=
     <url>https://github.com/lihaoyi/upickle</url>
       <licenses>
@@ -106,7 +105,7 @@ val upickle = crossProject.settings(
       s"-P:scalajs:mapSourceURI:$a->$g/v${version.value}/"
     }))
 ).jvmSettings(
-  libraryDependencies += "org.spire-math" %% "jawn-parser" % "0.8.3"
+  libraryDependencies += "org.spire-math" %% "jawn-parser" % "0.10.4"
 )
 
 lazy val upickleJS = upickle.js
