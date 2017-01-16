@@ -2,7 +2,7 @@ val ScalaVersion = "2.12.1"
 
 val upickle = crossProject.settings(
   organization := "com.github.japgolly.fork.upickle",
-  version := "custom-6",
+  version := "custom-7",
   scalaVersion := ScalaVersion,
   name := "upickle",
 

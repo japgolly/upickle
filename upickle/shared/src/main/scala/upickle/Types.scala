@@ -35,6 +35,10 @@ object ReadWriter {
   def xmap[A, B](g: A => B)(f: B => A)(implicit RB: Reader[A], WB: Writer[A]): Reader[B] with Writer[B] =
     ReadWriter[B](WB.write compose f, RB.read andThen g)
 
+  // xmap flipped
+  @inline def xmapf[A, B](f: B => A)(g: A => B)(implicit RB: Reader[A], WB: Writer[A]): Reader[B] with Writer[B] =
+    xmap(g)(f)
+
   @inline def merge[A](implicit r: Reader[A], w: Writer[A]): Reader[A] with Writer[A] =
     ReadWriter[A](w.write, r.read)
 }
